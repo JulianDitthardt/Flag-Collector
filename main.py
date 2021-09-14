@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium import common
 import pandas as pd
 
 
@@ -16,28 +17,60 @@ class WebScarper():
 
 
 
-     def get_embassy_sites(self):
+     def _get_embassy_sites(self):
           '''
-          Returns a list of the contact page of each Australian embassy
+          Returns a list of the contact page of each Australian em
           :return:
           '''
           self._driver.get(self._embassy_home)
           aTagsInLi = self._driver.find_elements_by_css_selector('li a')
           record = False
-          sites = []
+          sites = {}
 
           for a in aTagsInLi:
                if a.get_attribute('href') == self.first_embassy:
                     record = True
 
                if record == True:
-                    sites.append(a.get_attribute('href'))
+                    sites[a.text] = a.get_attribute('href')
 
                if a.get_attribute('href') == self.last_embassy:
                     record = False
+
           return sites
 
-     def check_email(self):
+
+
+     def find_emails(self):
+          '''
+          Finds the stored email address for each consulate.
+          '''
+          emails = {}
+          site_list = self._get_embassy_sites()
+
+          for country,site in site_list.items():
+               self._driver.get(site)
+               try:
+                    mail = self._driver.find_element_by_xpath('//*[@id="bodyContent"]/div/div/div[2]/div/ol/li/div[1]/div[2]/div[1]/div[2]/p/a')
+                    emails[country] = mail.get_attribute('href')
+               except common.exceptions.NoSuchElementException:
+                    pass
+
+               print(emails)
+
+
+     def complete(self):
+          self._driver.close()
+
+if __name__ == '__main__':
+     driver = "/opt/homebrew/bin/chromedriver"
+     home = 'https://protocol.dfat.gov.au/Public/MissionsInAustralia'
+     start_embassy = "https://protocol.dfat.gov.au/Public/Missions/4"
+     final_embassy = "https://protocol.dfat.gov.au/Public/Missions/222"
+
+     web = WebScarper(driver,home,start_embassy,final_embassy)
+     web.find_emails()
+     web.complete()
 
 
 
@@ -48,38 +81,4 @@ class WebScarper():
 
 
 
-
-
-#
-# driver = webdriver.Chrome("/opt/homebrew/bin/chromedriver")
-#
-# # driver.get('https://www.dfat.gov.au/about-us/our-locations/missions/our-embassies-and-consulates-overseas')
-#
-# # aTagsInLi = driver.find_elements_by_css_selector('li a')
-# #
-# # sites = []
-# start_embassy = "https://www.dfat.gov.au/about-us/our-locations/missions/australian-embassy-afghanistan"
-# # final_embassy = "https://www.dfat.gov.au/about-us/our-locations/missions/Pages/australian-embassy-zimbabwe"
-# # record = False
-#
-# driver.get("https://www.dfat.gov.au/about-us/our-locations/missions/australian-consulate-bosnia-and-herzegovina")
-#
-#
-#
-#
-#
-#
-# # for a in aTagsInLi:
-# #      if a.get_attribute('href') == start_embassy:
-# #           record = True
-# #
-# #      if record == True:
-# #           sites.append(a.get_attribute('href'))
-# #
-# #      if a.get_attribute('href') == final_embassy:
-# #           record = False
-# #
-# # for i in sites:
-# #      print(i)
-#
-# driver.close()
+)
