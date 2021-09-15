@@ -1,1 +1,4 @@
 /venv/
+example.log
+.DS_Store
+emails.csv
