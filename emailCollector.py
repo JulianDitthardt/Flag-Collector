@@ -22,8 +22,7 @@ class WebScarper():
 
      def _get_embassy_sites(self):
           '''
-          Returns a list of the contact page of each Australian em
-          :return:
+          Returns a list of the contact page of each Australian embassy.
           '''
           self._driver.get(self._embassy_home)
           aTagsInLi = self._driver.find_elements_by_css_selector('li a')
@@ -63,7 +62,7 @@ class WebScarper():
                          email = email.split('mailto:')[1]
                          logging.info(f"{country}: Mail address has been logged.")
                          emails[country] = email
-                         # print(country,": ",email)
+                         print(country,": ",email)
 
                     except IndexError:
                          logging.error(f"{country}: Mail address not found.")
@@ -99,11 +98,10 @@ if __name__ == '__main__':
      driver = "/opt/homebrew/bin/chromedriver"
      home = 'https://protocol.dfat.gov.au/Public/MissionsInAustralia'
      start_embassy = "https://protocol.dfat.gov.au/Public/Missions/4"
-     # final_embassy = "https://protocol.dfat.gov.au/Public/Missions/222"
-     final_embassy = "https://protocol.dfat.gov.au/Public/Missions/5"
+     final_embassy = "https://protocol.dfat.gov.au/Public/Missions/222"
+
      web = WebScarper(driver,home,start_embassy,final_embassy)
      web.complete()
-
 
 
 
