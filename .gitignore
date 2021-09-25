@@ -3,3 +3,6 @@ example.log
 .DS_Store
 emails.csv
 .idea*
+*.env
+emailTemplate.txt
+.bash_profile
